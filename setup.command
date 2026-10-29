@@ -6,7 +6,7 @@ set -euo pipefail
 # 幂等：可重复运行，不会覆盖已有的任务数据或分类。
 
 project_dir="${0:A:h}"
-data_root="$HOME/Library/Application Support/Planknot"
+data_root="${TODOLIST_DATA_ROOT:-$HOME/Library/Application Support/Planknot}"
 radar_src="$project_dir/desktop-radar"
 radar_dst="$data_root/desktop-radar"
 
@@ -30,8 +30,8 @@ done
 
 # 界面与小组件用到的图标
 if [[ -d "$radar_src/native/Shared" ]]; then
-  rm -rf "$radar_dst/native/Shared"
-  cp -R "$radar_src/native/Shared" "$radar_dst/native/Shared"
+  mkdir -p "$radar_dst/native/Shared"
+  ditto "$radar_src/native/Shared" "$radar_dst/native/Shared"
 fi
 
 # 初始化空任务库（仅在不存在时创建，不覆盖已有数据）

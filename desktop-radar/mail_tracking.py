@@ -8,11 +8,19 @@ import todoctl
 
 ROOT = Path(__file__).resolve().parent
 _spec = importlib.util.spec_from_file_location('tracking_receiver', ROOT/'mail-trigger'/'receiver.py')
-receiver = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(receiver)
+receiver = None
+if _spec and _spec.origin and Path(_spec.origin).is_file():
+    receiver = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(receiver)
+
+def require_receiver():
+    if receiver is None:
+        raise ValueError('尚未配置邮件接收器。')
 
 
 def tracking_status(config):
+    if receiver is None or not config.get('monitorFile'):
+        return {}
     monitor = receiver.read_json(config['monitorFile'])
     details = monitor.get('threadBindings', {})
     return {task: {'threadId': thread, 'subject': details.get(task, {}).get('subject', ''),
@@ -48,6 +56,7 @@ def thread_summary(gmail, thread_id):
 
 
 def search_sent(config, gmail, task_id, query):
+    require_receiver()
     application(config, task_id)
     query = query.strip()
     if len(query) < 2 or len(query) > 300:

@@ -36,7 +36,7 @@ print("Widget top three: " + WidgetPriority.ranked(actual,now:now).prefix(3).map
         import json
         folder=Path(tempfile.mkdtemp(prefix='widget-ranking-check-'))
         script=folder/'checks.swift';script.write_text('import Foundation\n'+model+'\n'+checks)
-        fixture=folder/'tasks.json';fixture.write_text(json.dumps(json.loads((root/'store/tasks.json').read_text())['tasks']))
+        fixture=folder/'tasks.json';fixture.write_text(json.dumps([]))
         result=subprocess.run(['swift','-module-cache-path',str(folder/'cache'),str(script),str(fixture)],capture_output=True,text=True,timeout=90)
         self.assertEqual(result.returncode,0,result.stderr)
         print(result.stdout.strip())

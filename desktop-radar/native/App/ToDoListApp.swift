@@ -432,7 +432,8 @@ private final class AppServices {
         queue.async {
             do {
                 let process = Process(), output = Pipe()
-                process.executableURL = URL(fileURLWithPath: self.root + "/mail-trigger/.venv/bin/python")
+                let mailPython = self.root + "/mail-trigger/.venv/bin/python"
+                process.executableURL = URL(fileURLWithPath: FileManager.default.isExecutableFile(atPath: mailPython) ? mailPython : "/usr/bin/python3")
                 process.arguments = [self.root + "/app_support.py"] + command
                 process.standardOutput = output
                 process.standardError = FileHandle.nullDevice

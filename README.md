@@ -38,6 +38,14 @@ xcodebuild -project ToDoList.xcodeproj -scheme ToDoList \
 ```
 
 产物在 `desktop-radar/native/.derivedData/Build/Products/Release/Planknot.app`。
+日常开发可在仓库根目录运行 `./develop.command`：构建当前源码、更新本机界面资源并打开
+App。已有任务库与个人设置保留；运行资源默认部署到 Application Support，
+可用 `TODOLIST_DATA_ROOT` 指定隔离测试目录。代码改动以此仓库为准。
+
+从旧 App 迁移时，先备份完整 `store/`（含分类、提醒设置和历史），确保旧命令、
+邮件接收器与新 App 读写同一份任务库。个人偏好和专注记录保存在 WebKit 本地存储中，
+也需要迁移。更换 bundle id 后，需重新允许通知并添加新版小组件。
+
 工程与 scheme 的内部名称仍是 `ToDoList`，用户可见名称是 `Planknot`。
 
 ## 数据与隐私

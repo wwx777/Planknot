@@ -7,6 +7,8 @@ import unittest
 from unittest.mock import patch
 
 RADAR = Path(__file__).resolve().parents[1]
+if not (RADAR / 'mail-trigger/receiver.py').exists():
+    raise unittest.SkipTest('Optional local mail receiver is not installed')
 spec = importlib.util.spec_from_file_location("receiver", RADAR / "mail-trigger" / "receiver.py")
 receiver = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(receiver)

@@ -6,21 +6,27 @@ if [[ ! -d /Applications/Xcode.app ]]; then
   exit 1
 fi
 export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
-/opt/homebrew/bin/xcodegen generate --spec "$project_dir/project.yml" --project "$project_dir"
+xcodegen generate --spec "$project_dir/project.yml" --project "$project_dir"
 
-# 从本地配置生成 entitlements（config.local.json 被 git 忽略，模板用 __DATA_ROOT__ 占位）
-config_file="$project_dir/../config.local.json"
-data_root="$HOME/Library/Application Support/Planknot"
-if [[ -f "$config_file" ]]; then
-  resolved=$(/usr/bin/python3 -c "import json;print(json.load(open('$config_file')).get('dataRoot',''))" 2>/dev/null)
-  [[ -n "$resolved" ]] && data_root="$resolved"
-fi
-sed "s|__DATA_ROOT__|$data_root|" "$project_dir/Widget/ToDoListWidget.entitlements.template" \
-  > "$project_dir/Widget/ToDoListWidget.entitlements"
+# Generate local sandbox paths without embedding a developer's home in source.
+/usr/bin/python3 - "$project_dir" <<'PYCONFIG'
+import json, os, plistlib, sys
+from pathlib import Path
+root = Path(sys.argv[1])
+config_path = root.parent / 'config.local.json'
+config = json.loads(config_path.read_text()) if config_path.exists() else {}
+data_root = Path(os.path.expanduser(os.environ.get('TODOLIST_DATA_ROOT') or config.get('dataRoot') or '~/Library/Application Support/Planknot'))
+value = {'com.apple.security.app-sandbox': True,
+         'com.apple.security.temporary-exception.files.absolute-path.read-only': [
+             str(data_root / 'desktop-radar/store/tasks.json'), str(data_root / 'config.json')]}
+(root / 'Widget/ToDoListWidget.entitlements').write_bytes(plistlib.dumps(value))
+PYCONFIG
 
 xcodebuild -project "$project_dir/ToDoList.xcodeproj" \
-  -scheme ToDoList -configuration Debug -destination 'platform=macOS' \
+  -scheme ToDoList -configuration Release -destination 'platform=macOS' \
   -derivedDataPath "$project_dir/.derivedData" CODE_SIGN_IDENTITY='-' build
-app_path="$project_dir/.derivedData/Build/Products/Debug/Planknot.app"
+app_path="$project_dir/.derivedData/Build/Products/Release/Planknot.app"
 echo "已构建：$app_path"
-open "$app_path"
+if [[ "${PLANKNOT_BUILD_ONLY:-0}" != 1 ]]; then
+  open "$app_path"
+fi

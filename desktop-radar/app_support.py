@@ -222,6 +222,7 @@ def main():
     operation = {'mailOperationTask': a.task_id} if a.command in ('search-mail','bind-mail') else {}
     if a.command in ('search-mail','bind-mail'):
         try:
+            mail_tracking.require_receiver()
             gmail = mail_tracking.receiver.Gmail(mail_tracking.receiver.credentials(config))
             if a.command == 'search-mail':
                 operation['mailSearch'] = mail_tracking.search_sent(config, gmail, a.task_id, a.query)

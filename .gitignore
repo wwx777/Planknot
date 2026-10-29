@@ -1,6 +1,6 @@
 # 数据与个人配置（本地才有，不提交）
-desktop-radar/store/
-desktop-radar/mail-trigger/
+desktop-radar/store
+desktop-radar/mail-trigger
 desktop-radar/*.plist
 desktop-radar/config.local.json
 
