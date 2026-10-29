@@ -147,6 +147,10 @@ class MailReceiver(unittest.TestCase):
         self.assertTrue(receiver.notify_user({"notify": {"command": command}}, "新回复", "请查看邮件"))
         self.assertEqual(out.read_text(encoding="utf-8"), "新回复|请查看邮件")
 
+    def test_notify_nonzero_exit_returns_false(self):
+        command = ["python3", "-c", "import sys; sys.exit(3)"]
+        self.assertFalse(receiver.notify_user({"notify": {"command": command}}, "新回复", "请查看邮件"))
+
 
 if __name__ == "__main__":
     unittest.main()
