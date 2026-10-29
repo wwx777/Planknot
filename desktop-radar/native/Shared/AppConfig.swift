@@ -42,7 +42,7 @@ enum AppConfig {
                fallback: "com.example.planknot.application-mail")
     }
 
-    static var boardHTMLPath: String { dataRoot + "/跨分类进度看板.html" }
+    static var boardHTMLPath: String { dataRoot + "/Board.html" }
     static var storePath: String { dataRoot + "/desktop-radar/store/tasks.json" }
     static var cliPath: String { dataRoot + "/desktop-radar/todoctl.py" }
     static var radarRoot: String { dataRoot + "/desktop-radar" }

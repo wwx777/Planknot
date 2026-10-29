@@ -48,7 +48,6 @@
 		3486417B716586AE9B5D06B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6417D516EF717F4867D9A66B /* ToDoFinal.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ToDoFinal.icns; sourceTree = "<group>"; };
 		73C7969B0D8BE5B87BC32397 /* ToDoListApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListApp.swift; sourceTree = "<group>"; };
-		7AD994D77A33529F2F28CFB8 /* ToDoListWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ToDoListWidget.entitlements; sourceTree = "<group>"; };
 		7E1F2613650910C83A5B213B /* ToDoListWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListWidget.swift; sourceTree = "<group>"; };
 		886F39E5A5D6EA47CE872291 /* ToDoListWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ToDoListWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD18ECFB688DB8C9805C3C8C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -84,7 +83,6 @@
 			isa = PBXGroup;
 			children = (
 				AD18ECFB688DB8C9805C3C8C /* Info.plist */,
-				7AD994D77A33529F2F28CFB8 /* ToDoListWidget.entitlements */,
 				E91EDB34B075296635AF022C /* ToDoListWidget.entitlements.template */,
 				7E1F2613650910C83A5B213B /* ToDoListWidget.swift */,
 			);

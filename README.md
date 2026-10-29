@@ -1,18 +1,33 @@
 # Planknot
 
-**Plan + Knot**：把任务、资料与进展连接起来的本地看板。可与不同 AI 助手配合使用。
+**Plan + Knot**：把计划、资料和进展系在同一块本地看板上。任务、日历、专注计时与
+Intern/PhD 申请跟踪都在一处，数据只存在你自己的 Mac 上。
 
-macOS 本地待办看板 + 桌面小组件。原生 App（AppKit + WebKit）加载本地 HTML 界面，通过一个小型 Python CLI 读写本地 JSON 任务库；WidgetKit 小组件直接读取同一份任务库，显示近期截止事项。
+## 功能
 
-## 组成
+- 任务看板：新增、编辑、完成、归档，按分类与状态分组，带进度时间线和关键节点。
+- 专项板块：Intern / PhD 申请各自成板，跟踪阶段、投递与回复时间、多轮面试。
+- 日历：月 / 周 / 日视图，自动换算时区；DDL 与面试提前弹窗提醒。
+- 专注计时：把任务点进去开始计时，带短休 / 长休。
+- 桌面小组件：显示近期截止和未读进展。
+- 可 DIY 分类；中英界面切换；本机数据导出。
 
-- `Board.html`：看板界面（任务、日历、专注、设置、Intern/PhD 专项板块）。
-- `desktop-radar/`：界面脚本与样式（`*.js`、`*.css`）、Python 读写层（`todoctl.py`、`app_support.py`、`mail_tracking.py`）、测试。
-- `desktop-radar/native/`：macOS 原生工程（`project.yml` + XcodeGen 生成 `.xcodeproj`），含主 App 与 Widget 扩展。
+## 快速上手（macOS 使用者）
 
-## 本地构建
+前提：一台运行 macOS 14 或以上的 Mac。
 
-依赖：macOS、Xcode、XcodeGen（`brew install xcodegen`）。
+1. 把整个文件夹解压到任意位置。
+2. 双击 `setup.command`，它会自动把看板资源放到
+   `~/Library/Application Support/Planknot/` 并初始化空任务库。
+3. 双击 `Planknot.app` 打开。若提示“无法验证开发者”，右键 App 选「打开」，
+   再在系统设置里点「仍要打开」即可。
+
+如果只拿到 `Planknot.app` 而没有 `setup.command`，首次运行前先执行一次
+`setup.command`，否则界面没有数据源会一片空白。
+
+## 给开发者：构建
+
+依赖：macOS、Xcode、[XcodeGen](https://github.com/yonaskolb/XcodeGen)（`brew install xcodegen`）。
 
 ```bash
 cd desktop-radar/native
@@ -22,34 +37,17 @@ xcodebuild -project ToDoList.xcodeproj -scheme ToDoList \
   -derivedDataPath .derivedData CODE_SIGN_IDENTITY='-' build
 ```
 
-产物在 `desktop-radar/native/.derivedData/Build/Products/Release/Planknot.app`。仓库内的 `.derivedData`、`Backups/`、`ManualBuild/`、`.build/` 不提交。
+产物在 `desktop-radar/native/.derivedData/Build/Products/Release/Planknot.app`。
+工程与 scheme 的内部名称仍是 `ToDoList`，用户可见名称是 `Planknot`。
 
-## 数据目录
+## 数据与隐私
 
-任务库与配置默认存放在 `desktop-radar/store/`，本仓库不含任何个人数据（`store/`、`mail-trigger/` 被 `.gitignore` 排除）。
+任务、分类和未读进展都保存在本机，仓库不含任何个人数据或邮箱凭据。`store/`、
+`mail-trigger/`、`config.local.json` 均被 `.gitignore` 排除。
 
-## 本地环境配置
+## 已知限制
 
-个人路径、bundle id 前缀、后台服务名不写进源码，放在 `desktop-radar/config.local.json`（已 git-ignore）。仓库只提交 `desktop-radar/config.example.json` 作为模板：
-
-```json
-{
-  "dataRoot": "~/Library/Application Support/Planknot",
-  "bundleIdPrefix": "com.example.planknot",
-  "serviceLabel": "com.example.planknot.application-mail"
-}
-```
-
-复制为 `config.local.json` 并改成你自己的值即可。Python 侧读取该文件；原生 App 与小组件在运行时读取 `~/Library/Application Support/Planknot/config.json`（构建脚本会从 `config.local.json` 生成 Widget 的 entitlements）。发布时把 `bundleIdPrefix` 换成你自己的域名。
-
-## 版本
-
-版本号由 `desktop-radar/native/project.yml` 中两个 target 的 `CFBundleShortVersionString` 与 `CFBundleVersion` 维护。发布时同步更新 `CHANGELOG.md` 并打 tag，例如：
-
-```bash
-git tag v1.2.0
-```
-
-## 发布前待办
-
-- 数据根目录已可配置，但还需把发布版的 bundle id 换成自己的域名，并配置 Developer ID 签名 + notarize，否则他人机器上会提示“无法验证开发者”。
+- 未配置 Developer ID 签名与 notarize，分享给他人的 App 首次打开需要右键绕过
+  Gatekeeper。正式分发前应换用自己的 bundle id 并签名。
+- 数据是本机文件，不跨设备同步。
+- 申请邮件提醒是个人扩展，依赖本机 Gmail 授权，未随本仓库分发。
