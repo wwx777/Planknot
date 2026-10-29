@@ -1,0 +1,37 @@
+# 数据与个人配置（本地才有，不提交）
+desktop-radar/store/
+desktop-radar/mail-trigger/
+desktop-radar/*.plist
+desktop-radar/config.local.json
+
+# 开发过程截图（desktop-radar 根目录）
+desktop-radar/*.png
+desktop-radar/*.jpg
+
+# 构建产物与缓存
+desktop-radar/.build/
+desktop-radar/native/.derivedData/
+desktop-radar/native/Backups/
+desktop-radar/native/ManualBuild/
+desktop-radar/native/Planknot.app/
+desktop-radar/native/native/
+desktop-radar/native/Widget/ToDoListWidget.entitlements
+*.app
+*.app.backup
+
+# Python
+__pycache__/
+*.pyc
+
+# 系统
+.DS_Store
+
+# 本地凭据与签名材料
+.env
+.env.*
+!.env.example
+*.p12
+*.p8
+*.mobileprovision
+*.xcuserstate
+xcuserdata/

@@ -1,0 +1,5 @@
+{
+  "dataRoot": "~/Library/Application Support/Planknot",
+  "bundleIdPrefix": "com.example.planknot",
+  "serviceLabel": "com.example.planknot.application-mail"
+}

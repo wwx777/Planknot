@@ -1,0 +1,15 @@
+const assert=require('node:assert/strict');
+globalThis.todoCalendarDates=require('../calendar-dates.js').calendarSourceDates;
+const {parseDue,dueValue}=require('../due-editor.js');
+assert.equal(parseDue('下周待确认').mode,'legacy');
+assert.equal(dueValue('legacy','','','','','下周待确认'),'下周待确认');
+assert.equal(dueValue('none','','','',''), '');
+assert.equal(dueValue('date','2026-11-02','','',''),'2026-11-02');
+assert.throws(()=>dueValue('deadline','2026-11-02','','','Europe/Paris'));
+assert.throws(()=>dueValue('deadline','2026-02-30','21','00','Europe/Paris'));
+assert.throws(()=>dueValue('deadline','2027-03-28','02','30','Europe/Paris'));
+assert.throws(()=>dueValue('deadline','2027-10-31','02','30','Europe/Paris'));
+const value=dueValue('deadline','2026-11-02','09','30','Asia/Shanghai');
+assert.deepEqual(parseDue(value),{mode:'deadline',day:'2026-11-02',hour:'09',minute:'30',zone:'Asia/Shanghai'});
+assert.equal(globalThis.todoCalendarDates(value,'Europe/Paris')[0].time,'02:30');
+process.stdout.write(value+'\n');

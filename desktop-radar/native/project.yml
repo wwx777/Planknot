@@ -1,0 +1,62 @@
+name: ToDoList
+options:
+  bundleIdPrefix: com.example.planknot
+  deploymentTarget:
+    macOS: "14.0"
+settings:
+  base:
+    SWIFT_VERSION: 5.0
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    CODE_SIGNING_ALLOWED: YES
+    CODE_SIGN_IDENTITY: "-"
+targets:
+  ToDoList:
+    type: application
+    platform: macOS
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleShortVersionString: "1.1"
+        CFBundleVersion: "2"
+        CFBundleDisplayName: Planknot
+        CFBundleName: Planknot
+        CFBundleIconFile: ToDoFinal
+        CFBundleURLTypes:
+          - CFBundleURLName: com.example.planknot.ToDoList
+            CFBundleURLSchemes:
+              - todolist
+    sources:
+      - path: App
+      - path: Shared/AppConfig.swift
+      - path: Shared/ToDoLogoTickStyleNoBorderPreview.png
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_NAME: Planknot
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.planknot.ToDoList
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.productivity
+        ENABLE_APP_SANDBOX: NO
+    dependencies:
+      - target: ToDoListWidget
+        embed: true
+  ToDoListWidget:
+    type: app-extension
+    platform: macOS
+    info:
+      path: Widget/Info.plist
+      properties:
+        CFBundleShortVersionString: "1.1"
+        CFBundleVersion: "2"
+        CFBundleDisplayName: Planknot
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    sources:
+      - path: Widget
+      - path: Shared/AppConfig.swift
+      - path: Shared/ToDoLogoTickStyleNoBorderPreview.png
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.planknot.ToDoList.widget
+        ENABLE_APP_SANDBOX: YES
+        CODE_SIGN_ENTITLEMENTS: Widget/ToDoListWidget.entitlements
