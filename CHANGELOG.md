@@ -1,11 +1,17 @@
+# Changelog
+
 ## Unreleased
+
+- 重写公开仓库的安装、数据存储、小组件和提醒说明，新增贡献指南。
+- 数据根目录改为 Application Support；本地配置和生成的沙箱路径不提交。
+- 新增 `develop.command`，支持从当前源码构建并更新本机资源。
+- 邮箱扩展按需加载，无邮箱配置时仍可使用任务与日历。
+- 修复任务完成或归档后专注计时仍继续的问题。
 
 - 应用品牌统一为 Planknot（Plan + Knot）。
 - 默认头像去除个人缩写，环境配置继续保存在忽略的本地文件中。
 - 新增 `setup.command`：一键把看板资源部署到本机数据目录并初始化空任务库。
 - 统一 App 读取的界面文件名为 `Board.html`，消除与 `跨分类进度看板.html` 的不一致。
-
-# Changelog
 
 版本号与 `desktop-radar/native/project.yml` 的 `CFBundleShortVersionString` 保持一致；tag 采用 `v<主>.<次>.<补丁>`。
 
@@ -20,7 +26,7 @@
 - 可 DIY 分类；任务级“关联信息”（面试 / 文档 / 网站 / 聊天，按需添加）。
 - 中英界面切换；本机数据导出。
 
-## 未完成 / 发布阻塞
+## 当前发布限制
 
-- 数据根目录仍为个人绝对路径（App + Widget + entitlements）。
-- 分发签名（Developer ID + notarize）未配置。
+- 尚未提供可安装 Release，分发签名（Developer ID + 公证）未配置。
+- Gmail 接收器为独立本机扩展，不包含在本仓库中。
