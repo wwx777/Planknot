@@ -36,6 +36,7 @@ PROJECT_FIELDS = {
     "contact": "contact", "submitted_at": "submittedAt", "reply": "reply",
     "reply_checked_at": "replyCheckedAt", "follow_up": "followUp",
     "ended_at": "endedAt", "end_reason": "endReason", "prep_note": "prepNote",
+    "board_type": "boardType",
 }
 
 
@@ -212,6 +213,10 @@ def validate_store(data: dict[str, Any]) -> None:
                 raise ValueError(f"task {task_id} {field} must be text")
         if task.get("kind", "task") not in {"task", "board"}:
             raise ValueError(f"task {task_id} has invalid kind")
+        if task.get("kind") == "board" and task.get("boardType") not in (None, "project", "application"):
+            raise ValueError(f"task {task_id} has invalid boardType")
+        if task.get("kind") != "board" and task.get("boardType"):
+            raise ValueError(f"task {task_id} boardType is only allowed on boards")
         if task.get("stage") and task["stage"] not in STAGES:
             raise ValueError(f"task {task_id} has invalid stage")
         if task.get("prepNote") and (not Path(task["prepNote"]).is_absolute() or Path(task["prepNote"]).suffix.lower() != ".md"):
@@ -754,6 +759,7 @@ def build_parser() -> argparse.ArgumentParser:
     for command in (add, update):
         command.add_argument("--prep-note", help="absolute Markdown path to open in Obsidian; empty clears")
         command.add_argument("--kind", choices=["task", "board"])
+        command.add_argument("--board-type", choices=["project", "application"], help="board kind: project (generic) or application (stage/interview tracking)")
         command.add_argument("--project", help="parent board ID; empty string clears it")
         command.add_argument("--stage", choices=["", *STAGES])
         command.add_argument("--contact")

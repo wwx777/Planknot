@@ -47,10 +47,13 @@ function replyLabel(t){
   if(isWaiting(t))return t.replyCheckedAt?'截至核对时未见回复':'记录为等待回复 · 待查收';
   return t.reply||'回复待核实';
 }
-function isApplicationProject(project){return ['REMOTE-INTERNS','PHD'].includes(project)}
+function isApplicationBoard(b){return !!b&&(b.boardType==='application'||(b.boardType==null&&b.cat==='申请'))}
+function isApplicationProject(project){const b=tasks.find(t=>t.id===project&&t.kind==='board');return isApplicationBoard(b)}
 function syncApplicationFields(){
-  const f=document.querySelector('#task-form'),section=document.querySelector('#application-fields');
-  const application=f.elements.kind.value!=='board'&&isApplicationProject(f.elements.project.value);
+  const f=document.querySelector('#task-form'),section=document.querySelector('#application-fields'),bt=document.querySelector('#board-type-field');
+  const isBoard=f.elements.kind.value==='board';
+  if(bt)bt.classList.toggle('hidden',!isBoard);
+  const application=!isBoard&&isApplicationProject(f.elements.project.value);
   section.classList.toggle('hidden',!application);
   section.querySelectorAll('input,select,textarea,button').forEach(el=>el.disabled=!application);
 }
@@ -86,7 +89,7 @@ function renderProjects(){
   const all=childrenOf(b.id),applied=all.filter(t=>t.submittedAt),waiting=all.filter(isWaiting),interviews=all.filter(t=>!isEnded(t)&&t.stage==='面试中');
   const q=document.querySelector('#search').value.trim().toLowerCase();
   const rows=all.filter(t=>(!q||[t.title,t.detail,t.contact,t.stage,t.reply,t.followUp,t.endReason,interviewSummary(t),t.id].join(' ').toLowerCase().includes(q))&&(projectFilter==='all'||(projectFilter==='waiting'&&isWaiting(t))||(projectFilter==='action'&&!isEnded(t)&&!isWaiting(t))||(projectFilter==='interview'&&!isEnded(t)&&t.stage==='面试中')||(projectFilter==='ended'&&isEnded(t))));
-  const application=b.cat==='申请';
+  const application=isApplicationBoard(b);
   panel.innerHTML='<div class="project-toolbar"><button id="project-back">← 总看板</button><a href="'+esc(sourceHref(b.source))+'">打开主记录 ↗</a><span class="spacer"></span><button id="project-gpt">复制给 GPT 的更新指令</button><button class="primary" id="project-add">＋ '+(application?'添加申请':'添加事项')+'</button></div><p class="project-intro">'+esc(b.detail)+'</p><div class="project-stats">'+[
     [all.length,application?'申请条目':'子事项'],[applied.length,'有投递记录'],[waiting.length,'记录为等待回复'],[interviews.length,'面试进行中']
   ].map(([n,label])=>'<div class="project-stat"><span>'+label+'</span><b>'+n+'</b></div>').join('')+'</div><div class="project-callout">'+(application?'回复状态以最近实际查收为准；修改看板不会刷新回复核对时间。未查收的申请会标记「待查收」。':'子事项的进度独立记录；完成其中一项不会自动完成整个板块。')+'</div><div class="project-toolbar"><div class="project-filters">'+[['all','全部'],['waiting','等待回复'],['action','需要行动'],['interview','面试中'],['ended','已结束']].map(([key,label])=>'<button data-project-filter="'+key+'" class="'+(projectFilter===key?'active':'')+'">'+label+'</button>').join('')+'</div><span class="spacer"></span><button id="project-view">'+(projectView==='board'?'切换表格':'切换阶段看板')+'</button><span class="project-switch-label">'+rows.length+' 项 · 修订 '+storeRevision+'</span></div><div id="project-content"></div>';

@@ -309,6 +309,7 @@ struct BoardWebView: NSViewRepresentable {
         private func appendProjectFields(_ task: [String: Any], to arguments: inout [String]) {
             for (key, flag) in [
                 ("kind", "--kind"), ("project", "--project"), ("stage", "--stage"),
+                ("boardType", "--board-type"),
                 ("contact", "--contact"), ("submittedAt", "--submitted-at"),
                 ("reply", "--reply"), ("replyCheckedAt", "--reply-checked-at"),
                 ("followUp", "--follow-up"), ("endedAt", "--ended-at"),
